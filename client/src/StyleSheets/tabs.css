@@ -13,3 +13,15 @@
 .dropdown-toggle:hover{
     background-color: lightgrey;
 }
+
+.clickedFile{
+    color: white;
+    text-align: center !important;
+    background-color: red;
+}
+
+/* .container{
+    padding: 0;
+    margin: 0;
+    width: 100% !important;
+} */
