@@ -15,7 +15,7 @@ database.connect();
 noteRouter.get("/users/:userId/notes", async (req, res) => {
     const userId = req.params.userId;
     const { searchText, accessToken } = req.query;
-    const tags = req.query.tags.split(',');
+    const tags = Array.isArray(req.query.tags) ? req.query.tags: req.query.tags.split(',');
 
     try {
         if (jwt.isExpired(accessToken)) {
