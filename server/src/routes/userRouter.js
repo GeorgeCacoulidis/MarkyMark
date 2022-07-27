@@ -15,21 +15,37 @@ userRouter.use(bodyParser.json());
 
 const { sendVerificationEmail, sendResetEmail } = require("../nodemailer");
 const { Console } = require("console");
+const { refresh } = require("../createJWT");
 
 database.connect();
 
-userRouter.get("/users/createToken", async (req, res) => {
-    const { userId, email, firstName, lastName, tags } = req.body;
-    const token = jwt.createToken(userId, email, firstName, lastName, tags);
+// userRouter.get("/users/createToken", async (req, res) => {
+//     const { userId, email, firstName, lastName, tags } = req.body;
+//     const token = jwt.createToken(userId, email, firstName, lastName, tags);
 
-    res.send(token);
-});
+//     res.send(token);
+// });
 
-userRouter.get("/users/auth", async (req, res) => {
-    const auth = jwt.authenticateToken(req.headers.authorization);
+// userRouter.get("/users/auth", async (req, res) => {
+//     const { accessToken } = req.query;
+//     try {
+//         if (jwt.isExpired(accessToken)) {
+//             res.send("token expired");
+//             return;
+//         }
+//     } catch (e) {
+//         console.log(e.message);
+//     }
 
-    res.send(auth);
-});
+//     console.log("success");
+//     let refreshedToken = null;
+//     try {
+//         refreshedToken = jwt.refresh(accessToken);
+//     } catch (e) {
+//         console.log(e.message);
+//     }
+//     res.status(200).json({ error: "", accessToken: refreshedToken });
+// });
 
 // user logs in to account
 userRouter.get("/users", async (req, res) => {
@@ -57,12 +73,12 @@ userRouter.get("/users", async (req, res) => {
             if (verified) {
                 try {
                     ret = {
-                        accessToken: jwt.createAccessToken(userId, email, firstName, lastName, tags),
-                        refreshToken: jwt.createRefreshToken(userId),
+                        accessToken: jwt.createToken(userId, email, firstName, lastName, tags),
                         userId: userId,
                         firstName: firstName,
                         lastName: lastName,
                         tags: tags,
+                        error: "",
                     };
                 } catch (e) {
                     ret = { error: "Token error: " + e.toString() };
